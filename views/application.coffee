@@ -1,5 +1,5 @@
-$ ->
-  alert('foo')
+#$ ->
+#  alert('foo')
 
 quantize = (d) ->
   "q" + Math.min(8, ~~(data[d.id] * 9 / 12)) + "-9"
