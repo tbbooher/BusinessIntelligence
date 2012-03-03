@@ -1,7 +1,9 @@
 # Gemfile
 source :rubygems
 
-gem 'sinatra', '1.1.0'
-gem 'thin', '1.2.7'
+gem 'sinatra'
+gem 'thin'
 gem "haml"
 gem "barista"
+gem "sass"
+gem "shotgun"

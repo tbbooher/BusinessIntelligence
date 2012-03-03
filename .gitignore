@@ -2,3 +2,6 @@
 *~
 *.swp
 .sass-cache
+.bundle/
+.DS_Store
+tmp/**/*
