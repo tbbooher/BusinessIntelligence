@@ -6,6 +6,7 @@
     %link{ :href => "/bootstrap/css/bootstrap.css", :type => "text/css", :rel => "stylesheet" }
     %link{ :href => "/bootstrap/css/bootstrap-responsive.css", :type => "text/css", :rel => "stylesheet" }	
     %link{:rel => "stylesheet", :type => "text/css", :href => '/stylesheets/custom.css'}
+    %link{:rel => "stylesheet", :type => "text/css", :href => '/stylesheets/colorbrewer.css'}
     %title Guard Reserve Force Mix Tool
     %link{ rel: "apple-touch-icon", href: "/bootstrap/images/apple-touch-icon.png"}
     %link{ rel: "shortcut icon", href: "/bootstrap/images/favicon.ico"}
@@ -23,8 +24,8 @@
           = yield
 
   %script{:src => "/javascript/jquery-1.7.1.min.js"}
-  %script{:src => "/javascript/backbone-min.js"}
-  %script{:src => "/javascript/d3.v2.js"}
+  /%script{:src => "/javascript/backbone-min.js"}
+  %script{:src => "/javascript/d3/d3.v2.min.js"}
   %script{:src => "/bootstrap/js/bootstrap.min.js"}
   %script{:src => "http://maps.googleapis.com/maps/api/js?sensor=true"}
   %script{:src => "/javascript/application.js"}
