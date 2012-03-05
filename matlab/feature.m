@@ -15,13 +15,13 @@ classdef feature < handle
         function obj = feature(f)
            obj.shape = f;
 %            d3 = struct('type','Feature','properties',{},'geometry',{'type','Polygon','coordinates',[]});
-           obj.lats = d.Lat(~isnan(d.Lat))';
-           obj.lons = d.Lon(~isnan(d.Lon))';
+           obj.lats = f.Lat(~isnan(f.Lat))';
+           obj.lons = f.Lon(~isnan(f.Lon))';
            d3.type = 'Feature';
            d3.properties = [];
            d3.geometry.type = 'Polygon';
            d3.geometry.coordinates = [obj.lats obj.lons];
-           obj.name = find_name(d);
+           obj.name = find_name(f);
            d3.id = obj.name;
            obj.d3 = d3;
 %            {"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-147.079854,60.200582],[-147.874011,59.784335],[-147.112716,60.381321],[-147.079854,60.200582]]]},"id":"02261"},    

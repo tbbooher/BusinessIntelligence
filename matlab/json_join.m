@@ -13,7 +13,7 @@ for i = 2:length(varargin)
    out = sprintf('%s,%s',out, varargin{i});
 end
 
-out = sprintf('%s%s\n',out,delimiter_end);
+out = sprintf('%s%s\n',out,delimeter_end);
 
 end
 
