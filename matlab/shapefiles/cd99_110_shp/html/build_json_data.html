@@ -1,0 +1,304 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>build_json_data</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-30"><meta name="DC.source" content="build_json_data.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> build_json_data
+clc;
+s = shaperead(<span class="string">'cd99_110'</span>,<span class="string">'UseGeoCoords'</span>,true);
+coords = zeros(1,2);
+<span class="keyword">for</span> i = 1:1 <span class="comment">%length(s)</span>
+    district = s(i);
+    lats = district.Lat;
+    lons = district.Lon;
+    lats(isnan(lats(:)))=[];
+    lons(isnan(lons(:)))=[];
+    d_name = district.NAME;
+<span class="comment">%     disp([num2str(district.STATE) ' -&gt; ' get_name(district.STATE) ' ' d_name]);</span>
+    <span class="keyword">if</span> size(d_name,2) &gt;= 3
+        <span class="keyword">if</span> strcmp(d_name(1:3), <span class="string">'One'</span>)
+            state_string = <span class="string">'AL'</span>;
+        <span class="keyword">else</span>
+            state_string = sprintf(<span class="string">'%02d'</span>,str2double(d_name));
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+        state_string = sprintf(<span class="string">'%02d'</span>,str2double(d_name));
+    <span class="keyword">end</span>
+    name = [get_name(str2double(district.STATE)) state_string];
+    coords(1,1:2) = meanm(lats,lons); <span class="comment">%[lat_c, lon_c];</span>
+    fid = fopen([name <span class="string">'.json'</span>],<span class="string">'w'</span>);
+    data.lats = lats;
+    data.lons = lons;
+    data.name = name;
+    data.southwest = [min(lats),min(lons)];
+    data.northeast = [max(lats),max(lons)];
+    data.centroid = coords;
+<span class="comment">%     to_json(fid,data)</span>
+    build_json(fid,data);
+    fclose(fid);
+    disp([<span class="string">'"'</span> name <span class="string">'" =&gt; ['</span> num2str(coords(1)) <span class="string">','</span> num2str(coords(2)) <span class="string">'],'</span>]);
+<span class="keyword">end</span> <span class="comment">% for</span>
+
+<span class="keyword">end</span> <span class="comment">% function</span>
+
+<span class="keyword">function</span> build_json(fid,data)
+fprintf(fid,<span class="string">'{\n'</span>);
+fprintf(fid,[<span class="string">'"name":"'</span> data.name <span class="string">'",\n'</span>]);
+fprintf(fid,<span class="string">'"extents": {\n'</span>);
+fprintf(fid,<span class="string">'"southWest":{"lat":%g, "lon":%g},\n'</span>, data.southwest);
+fprintf(fid,<span class="string">'"northEast":{"lat":%g, "lon":%g}\n'</span>, data.northeast);
+fprintf(fid,<span class="string">'},\n'</span>);
+fprintf(fid,[<span class="string">'"centroid":{"lat":'</span> num2str(data.centroid(1)) <span class="string">', "lon":'</span> num2str(data.centroid(2)) <span class="string">'},\n'</span>]);
+fprintf(fid,<span class="string">'"coords": [\n'</span>);
+<span class="keyword">for</span> i = 1:length(data.lats)
+  <span class="keyword">if</span> i == length(data.lats)
+    fprintf(fid,<span class="string">'{"lat":%10.10g,"lon":%10.10g}\n'</span>, data.lats(i), data.lons(i));
+  <span class="keyword">else</span>
+    fprintf(fid,<span class="string">'{"lat":%10.10g,"lon":%10.10g},\n'</span>, data.lats(i), data.lons(i));
+  <span class="keyword">end</span>
+<span class="keyword">end</span> <span class="comment">% for</span>
+fprintf(fid,<span class="string">']\n}\n'</span>);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> out = get_name(idx)
+names{01}=<span class="string">'AL'</span>;
+names{02}=<span class="string">'AK'</span>;
+names{04}=<span class="string">'AZ'</span>;
+names{05}=<span class="string">'AR'</span>;
+names{06}=<span class="string">'CA'</span>;
+names{08}=<span class="string">'CO'</span>;
+names{09}=<span class="string">'CT'</span>;
+names{10}=<span class="string">'DE'</span>;
+names{11}=<span class="string">'DC'</span>;
+names{12}=<span class="string">'FL'</span>;
+names{13}=<span class="string">'GA'</span>;
+names{15}=<span class="string">'HI'</span>;
+names{16}=<span class="string">'ID'</span>;
+names{17}=<span class="string">'IL'</span>;
+names{18}=<span class="string">'IN'</span>;
+names{19}=<span class="string">'IA'</span>;
+names{20}=<span class="string">'KS'</span>;
+names{21}=<span class="string">'KY'</span>;
+names{22}=<span class="string">'LA'</span>;
+names{23}=<span class="string">'ME'</span>;
+names{24}=<span class="string">'MD'</span>;
+names{25}=<span class="string">'MA'</span>;
+names{26}=<span class="string">'MI'</span>;
+names{27}=<span class="string">'MN'</span>;
+names{28}=<span class="string">'MS'</span>;
+names{29}=<span class="string">'MO'</span>;
+names{30}=<span class="string">'MT'</span>;
+names{31}=<span class="string">'NE'</span>;
+names{32}=<span class="string">'NV'</span>;
+names{33}=<span class="string">'NH'</span>;
+names{34}=<span class="string">'NJ'</span>;
+names{35}=<span class="string">'NM'</span>;
+names{36}=<span class="string">'NY'</span>;
+names{37}=<span class="string">'NC'</span>;
+names{38}=<span class="string">'ND'</span>;
+names{39}=<span class="string">'OH'</span>;
+names{40}=<span class="string">'OK'</span>;
+names{41}=<span class="string">'OR'</span>;
+names{42}=<span class="string">'PA'</span>;
+names{44}=<span class="string">'RI'</span>;
+names{45}=<span class="string">'SC'</span>;
+names{46}=<span class="string">'SD'</span>;
+names{47}=<span class="string">'TN'</span>;
+names{48}=<span class="string">'TX'</span>;
+names{49}=<span class="string">'UT'</span>;
+names{50}=<span class="string">'VT'</span>;
+names{51}=<span class="string">'VA'</span>;
+names{53}=<span class="string">'WA'</span>;
+names{54}=<span class="string">'WV'</span>;
+names{55}=<span class="string">'WI'</span>;
+names{56}=<span class="string">'WY'</span>;
+names{72}=<span class="string">'PR'</span>;
+
+<span class="keyword">if</span> isa(idx,<span class="string">'char'</span>)
+    idx = str2double(idx);
+<span class="keyword">end</span>
+
+out = names{idx};
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">"AL05" =&gt; [34.5782,-86.7549],
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+function build_json_data
+clc;
+s = shaperead('cd99_110','UseGeoCoords',true);
+coords = zeros(1,2);
+for i = 1:1 %length(s)
+    district = s(i);
+    lats = district.Lat;
+    lons = district.Lon;
+    lats(isnan(lats(:)))=[];
+    lons(isnan(lons(:)))=[];
+    d_name = district.NAME;
+%     disp([num2str(district.STATE) ' -> ' get_name(district.STATE) ' ' d_name]);
+    if size(d_name,2) >= 3
+        if strcmp(d_name(1:3), 'One')
+            state_string = 'AL';
+        else
+            state_string = sprintf('%02d',str2double(d_name));
+        end
+    else
+        state_string = sprintf('%02d',str2double(d_name));
+    end
+    name = [get_name(str2double(district.STATE)) state_string];    
+    coords(1,1:2) = meanm(lats,lons); %[lat_c, lon_c];    
+    fid = fopen([name '.json'],'w');
+    data.lats = lats;
+    data.lons = lons;
+    data.name = name;
+    data.southwest = [min(lats),min(lons)];
+    data.northeast = [max(lats),max(lons)];
+    data.centroid = coords;
+%     to_json(fid,data)
+    build_json(fid,data);
+    fclose(fid);    
+    disp(['"' name '" => [' num2str(coords(1)) ',' num2str(coords(2)) '],']);
+end % for
+
+end % function
+
+function build_json(fid,data)
+fprintf(fid,'{\n');
+fprintf(fid,['"name":"' data.name '",\n']);
+fprintf(fid,'"extents": {\n');
+fprintf(fid,'"southWest":{"lat":%g, "lon":%g},\n', data.southwest);
+fprintf(fid,'"northEast":{"lat":%g, "lon":%g}\n', data.northeast);
+fprintf(fid,'},\n');
+fprintf(fid,['"centroid":{"lat":' num2str(data.centroid(1)) ', "lon":' num2str(data.centroid(2)) '},\n']);
+fprintf(fid,'"coords": [\n');
+for i = 1:length(data.lats)
+  if i == length(data.lats)
+    fprintf(fid,'{"lat":%10.10g,"lon":%10.10g}\n', data.lats(i), data.lons(i));      
+  else
+    fprintf(fid,'{"lat":%10.10g,"lon":%10.10g},\n', data.lats(i), data.lons(i));
+  end
+end % for
+fprintf(fid,']\n}\n');
+end
+
+function out = get_name(idx)
+names{01}='AL';
+names{02}='AK';
+names{04}='AZ';
+names{05}='AR';
+names{06}='CA';
+names{08}='CO';
+names{09}='CT';
+names{10}='DE';
+names{11}='DC';
+names{12}='FL';
+names{13}='GA';
+names{15}='HI';
+names{16}='ID';
+names{17}='IL';
+names{18}='IN';
+names{19}='IA';
+names{20}='KS';
+names{21}='KY';
+names{22}='LA';
+names{23}='ME';
+names{24}='MD';
+names{25}='MA';
+names{26}='MI';
+names{27}='MN';
+names{28}='MS';
+names{29}='MO';
+names{30}='MT';
+names{31}='NE';
+names{32}='NV';
+names{33}='NH';
+names{34}='NJ';
+names{35}='NM';
+names{36}='NY';
+names{37}='NC';
+names{38}='ND';
+names{39}='OH';
+names{40}='OK';
+names{41}='OR';
+names{42}='PA';
+names{44}='RI';
+names{45}='SC';
+names{46}='SD';
+names{47}='TN';
+names{48}='TX';
+names{49}='UT';
+names{50}='VT';
+names{51}='VA';
+names{53}='WA';
+names{54}='WV';
+names{55}='WI';
+names{56}='WY';
+names{72}='PR';
+
+if isa(idx,'char')
+    idx = str2double(idx);
+end
+
+out = names{idx};
+end
+##### SOURCE END #####
+--></body></html>
