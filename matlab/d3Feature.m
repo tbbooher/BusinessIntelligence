@@ -1,4 +1,4 @@
-classdef feature < handle
+classdef d3Feature < handle
     %UNTITLED2 Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -6,22 +6,25 @@ classdef feature < handle
         shape
         lats
         lons
+        x
+        y
         name
         d3
-        json
+        json        
     end
     
     methods
-        function obj = feature(f)
-           obj.shape = f;
+        function obj = d3Feature(district)
+           obj.shape = district;
 %            d3 = struct('type','Feature','properties',{},'geometry',{'type','Polygon','coordinates',[]});
-           obj.lats = f.Lat(~isnan(f.Lat))';
-           obj.lons = f.Lon(~isnan(f.Lon))';
+           obj.lats = district.Lat(~isnan(district.Lat))';
+           obj.lons = district.Lon(~isnan(district.Lon))';
            d3.type = 'Feature';
            d3.properties = [];
            d3.geometry.type = 'Polygon';
-           d3.geometry.coordinates = [obj.lats obj.lons];
-           obj.name = find_name(f);
+           [obj.x, obj.y] = projfwd(defaultm('mercator'), obj.lats, obj.lons);
+           d3.geometry.coordinates = [obj.x obj.y];
+           obj.name = find_name(district);
            d3.id = obj.name;
            obj.d3 = d3;
 %            {"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-147.079854,60.200582],[-147.874011,59.784335],[-147.112716,60.381321],[-147.079854,60.200582]]]},"id":"02261"},    
@@ -39,6 +42,10 @@ classdef feature < handle
             fclose(fid);
         end
         
+        function mstruct = ms(obj)
+            m = defaultm('mercator');
+            mstruct = m;
+        end        
 
     end
     

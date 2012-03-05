@@ -12,7 +12,7 @@ classdef feature_collection < handle
 %            {"type":"FeatureCollection","features":[ 
             districts = shaperead('cd99_110','UseGeoCoords',true);
             d = districts(1);
-            obj.feature_list = feature(d).json;
+            obj.feature_list = d3Feature(d).json;
         end
         
         function obj = save_json(obj)
