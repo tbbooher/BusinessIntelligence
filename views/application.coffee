@@ -10,12 +10,16 @@ path = d3.geo.path()
 
 svg = d3.select("#chart").append("svg")
 
-# counties = svg.append("g").attr("id", "counties").attr("class", "Blues")
+districts = svg.append("g").attr("id", "districts").attr("class", "Blues")
 
 states = svg.append("g").attr("id", "states")
 
-#d3.json "/json/us-counties.json", (json) ->
-#  counties.selectAll("path").data(json.features).enter().append("path").attr("class", (if data then quantize else null)).attr "d", path
+d3.json "/json/districts.json", (json) ->
+  districts.selectAll("path").data(json.features).enter().append("path").attr "d", path
+
+#   districts.selectAll("path").data(json.features).enter().append("path").attr("class", (if data then quantize else null)).attr "d", path
+# the d attribute is the path data
+# the g attribute is for grouping data
 
 d3.json "/json/us-states.json", (json) ->
   states.selectAll("path").data(json.features).enter().append("path").attr "d", path
@@ -23,7 +27,4 @@ d3.json "/json/us-states.json", (json) ->
 
 # d3.json "/json/unemployment.json", (json) ->
 #   data = json
-#   counties.selectAll("path").attr "class", quantize
-#
-# need to figure out about d3.js
-#
+#   districts.selectAll("path").attr "class", quantize
