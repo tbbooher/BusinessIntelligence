@@ -1,11 +1,3 @@
-body { padding-top: 60px; }
-
-svg {
-  background: #eee;
-  width: 960px;
-  height: 500px;
-}
-
 #counties path {
   stroke: #fff;
   stroke-width: .25px;
@@ -17,3 +9,262 @@ svg {
   stroke-width: 1.5px;
 }
 
+/* stolen from online */
+
+#ie8 {
+    display:none;
+}
+
+body {
+  margin: 10px;
+  font-family: 'Open Sans', sans-serif;
+  color: #ddd;
+}
+
+html {
+  background-color: #222;
+}
+
+svg {
+  width: 960px;
+  height: 500px;
+}
+
+a {
+  color: #ddd;
+}
+
+h2 {
+  padding: 0px;
+  margin: 0px;
+}
+
+#chart {
+  border: solid #333 1px;
+  height: 500px;
+  width: 960px;
+  margin: 0 auto;
+  margin-top: 40px;
+}
+
+#explanation {
+  width: 960px;
+  position: relative;
+  margin: 0 auto;
+}
+
+#explanation #about {
+  position: absolute;
+  top: 8px;
+  right: 0px;
+  display: none;
+  z-index: 1;
+}
+
+#explanation #loading {
+  position: absolute;
+  top: 8px;
+  left: 0px;
+}
+
+#controls {
+  position: relative;
+  margin: 0 auto;
+  text-align: center;
+  display: none;
+}
+
+#controls p {
+  padding: 0px;
+  margin: 0px;
+}
+
+#controls h1 {
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.buttons {
+  position: relative;
+  clear: both;
+  width: 40%;
+  margin: 0 auto;
+}
+
+.buttons .button {
+  width: 20%;
+  float: left;
+}
+
+.buttons .button img {
+  border: solid #222 1px;
+}
+
+.buttons .button img:hover {
+  border: solid #ddd 1px;
+}
+
+.buttons .text {
+  width: 60%;
+  float: left;
+  padding-top: 5px;
+}
+
+.buttons .end {
+  clear: both;
+}
+
+.current {
+  font-weight: 700;
+}
+
+.legend rect {
+  stroke: #333;
+  stroke-width: 0.25px;
+}
+
+.legend-title,
+.legend-tick,
+.legend text,
+.title,
+.year {
+  fill: #ddd;
+}
+
+.legend-tick {
+  font-size: 0.75em;
+}
+
+.legend-title {
+  font-size: 1em;
+}
+
+.legend text {
+  font-size: 0.75em;
+}
+
+.title {
+  font-size: 1.5em;
+}
+
+.year {
+  font-size: 3em;
+}
+
+.notes {
+  fill: #aaa;
+  font-size: 0.75em;
+}
+
+/* from the site */
+
+ .spark path {
+                stroke: #ddd;
+                stroke-width: 3;
+                fill: none;
+            }
+
+            .spark circle {
+                fill: #ddd;
+                stroke: none;
+            }
+
+            .spark text {
+                fill: #ddd;
+            }
+
+            .topFive text {
+                fill: #ddd;
+                cursor: default;
+            }
+
+            .topFive text:hover {
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
+            .topFiveInfo p {
+                font-size: 1em;
+                line-height: 1.5em;
+                margin: 0;
+                padding: 0;
+            }
+
+            .topFiveInfo body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .topFiveInfoSubtitle {
+                fill: #ddd;
+                font-style: italic;
+            }
+
+            .countyName text {
+                font-size: 1.25em;
+                fill: #ddd;
+            }
+
+            .countyName .county {
+                font-size: 1.5em;
+            }
+
+            .countyName .state {
+                font-size: 1.25em;
+            }
+
+            .buttons {
+                width: 30%;
+            }
+
+            #controls {
+                margin-top: 20px;
+            }
+
+            #controls .text {
+                font-size: 1.5em;
+                padding: 0px;
+                margin: 0px;
+            }
+
+            svg {
+                width: 1060px;
+                height: 740px;
+            }
+
+            #header {
+                margin: 0 auto;
+                width: 1060px;
+            }
+
+            #chart {
+                width: 1060px;
+                height: 740px;
+                margin-top: 30px;
+            }
+
+            #explanation {
+                width: 1060px;
+            }
+
+            #explanation #about {
+                top: 0px;
+            }
+
+            #header .title {
+                font-family: georgia, "times new roman", times, serif;
+                font-size: 3em;
+                font-weight: normal;
+                padding: 0px;
+                margin-top: 30px;
+                margin-bottom: 20px;
+            }
+
+            #header .subtitle {
+                font-family: georgia, "times new roman", times, serif;
+                font-size: 1.1em;
+                line-height: 1.65em;
+                font-weight: normal;
+                padding: 0px;
+                margin: 0px;
+            }
