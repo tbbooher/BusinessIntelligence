@@ -15,6 +15,7 @@ for i = 1:numel(s)
     s(i).auths = auths;
     s(i).color_index = iColor;
     s(i).d_name = find_name(d);
+    s(i).bases = load_bases(af.location_name(in));
     if auths > 0
         disp('-----------');
         disp(find_name(d));
@@ -40,4 +41,11 @@ if q == 0 || isnan(q)
 else
     qval = min(num_vals,q);
 end
+end
+
+function out = load_bases(locations)
+    o = strrep(savejson('eieio',locations),'"eieio": ','');
+    o = regexprep(o,'\n','');
+    o = regexprep(o,'\t','');    
+    out = strtrim(o);
 end
