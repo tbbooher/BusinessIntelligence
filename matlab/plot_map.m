@@ -35,7 +35,7 @@ function qval = quantize(val)
 num_vals = 8;
 max_val = 10000;
 q = ceil(val*num_vals/max_val);
-if q == 0
+if q == 0 || isnan(q)
     qval = 1;
 else
     qval = min(num_vals,q);

@@ -93,6 +93,8 @@
   highlightColor = d3.rgb("red").darker()
   currentYearIndex = 0
   hue = 230
+
+  #basic graphics manipulation (we need to do)
   path = d3.geo.path()
   svg = d3.select("#chart").append("svg:svg")
   legend = svg.append("svg:g").attr("transform", "translate(" + (904 + extraTranslateRight) + ", 240)")
@@ -101,9 +103,6 @@
   map = svg.append("svg:g").attr("class", "map").attr("transform", "translate(" + (extraTranslateRight + 50) + ", 0)")
   spark = svg.append("svg:g").attr("class", "spark").attr("transform", "translate(55, 230)").style("visibility", "hidden")
   countyName = svg.append("svg:g").attr("class", "countyName").attr("transform", "translate(15, 260)").style("visibility", "hidden")
-  topFiveInfoSubtitle = svg.append("svg:text").attr("class", "topFiveInfoSubtitle").attr("transform", "translate(15, 530)").text("Highest poverty rates:")
-  topFive = svg.append("svg:g").attr("class", "topFive").attr("transform", "translate(15, 560)")
-  topFiveInfo = svg.append("svg:g").attr("class", "topFiveInfo").attr("transform", "translate(270, 512)")
 
   # load states data
   d3.json "../static/data/states.json", (json) ->
