@@ -2,10 +2,8 @@ function plot_map
 close all;
 ax = worldmap('usa');
 s = shaperead('districts','UseGeoCoords',true);
-af.lats = 25 + (55-25).*rand(100,1); % 25 to 55
-af.lons = -80 + (-120+80).*rand(100,1); % -80 to -120
-af.auths = randi(100,100,1);
-colors = jet(10);
+af = load_location_data;
+colors = jet(8);
 colors(1,:) = [1 1 1];
 plotm(af.lats,af.lons,'x');
 for i = 1:numel(s)
@@ -13,7 +11,6 @@ for i = 1:numel(s)
     % find auths in this state
     in = inpolygon(af.lats,af.lons,d.Lat',d.Lon');
     auths = sum(af.auths(in));
-    
     iColor = quantize(auths);
     s(i).auths = auths;
     s(i).color_index = iColor;
@@ -35,12 +32,12 @@ shapewrite(s,'districts_with_auths');
 end
 
 function qval = quantize(val)
-num_vals = 10;
-max_val = 100;
+num_vals = 8;
+max_val = 10000;
 q = ceil(val*num_vals/max_val);
 if q == 0
     qval = 1;
 else
-    qval = min(20,q);
+    qval = min(num_vals,q);
 end
 end
