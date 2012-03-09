@@ -15,7 +15,7 @@ for i = 1:numel(s)
     s(i).auths = auths;
     s(i).color_index = iColor;
     s(i).d_name = find_name(d);
-    s(i).bases = load_bases(af.location_name(in));
+%     s(i).bases = load_bases(af.location_name(in));
     if auths > 0
         disp('-----------');
         disp(find_name(d));

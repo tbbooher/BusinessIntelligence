@@ -3,7 +3,6 @@
 
 data = undefined
 selectedCounty = undefined
-district = undefined
 highlightColor = d3.rgb(198, 42, 42)
 extraTranslateRight = 100
 
@@ -29,8 +28,7 @@ d3.json "/json/short_districts.json", (json) ->
         console.log(d.properties.d_name)
         $('#details').html("district " + d.properties.d_name + " has " + d.properties.auths + " authorizations");
 
-        district = d
-        display base for base in JSON.parse(d.properties.bases) when d.properties.base isnt null
+        display base for base in base_list when d.properties.base isnt null
 
   ).on("mouseout", (d) ->
         d3.select(this).style('fill','');
