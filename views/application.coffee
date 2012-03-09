@@ -2,41 +2,107 @@
 #  alert('foo')
 
 data = undefined
-selectedCounty = undefined
-highlightColor = d3.rgb(198, 42, 42)
+selectedDistrict = undefined
+saipehighlights = undefined
+states = undefined
+currentDistrict = undefined
+#spark = undefined
+#map = undefined
 extraTranslateRight = 100
+
+# nodata
+highlightColor = d3.rgb(198, 42, 42)
+noData = "rgb(255,255,255)"
 
 path = d3.geo.path()
 
+# build our map
 svg = d3.select("#chart").append("svg:svg")
-map = svg.append("svg:g").attr("class", "map").attr("transform", "translate(" + (extraTranslateRight + 50) + ", 0)")
+map = svg.append("svg:g").attr("class", "map Blues").attr("transform", "translate(" + (extraTranslateRight + 50) + ", 0)")
+spark = svg.append("svg:g").attr("class", "spark").attr("transform", "translate(55, 230)").style("visibility", "hidden")
 
-districts = svg.append("g").attr("id", "districts").attr("class", "Blues")
+# need to change this to district name
+districtName = svg.append("svg:g").attr("class", "districtName").attr("transform", "translate(15, 260)").style("visibility", "hidden")
 
-states = svg.append("g").attr("id", "states")
+# let us build a legend
+legend = svg.append("svg:g").attr("transform", "translate(" + (904 + extraTranslateRight) + ", 240)")
+legendGradient = legend.append("svg:g")
+legendTicks = legend.append("svg:g")
 
+# let us store some states -- should we use these?
 d3.json "/json/us-states.json", (json) ->
-  states.selectAll("path").data(json.features).enter().append("path").attr "d", path
-  states.selectAll("path").attr("class", "Blues")
+  states = json
 
+# let us load saipe data
+#d3.json "../static/data/saipehighlights.json", (json) ->
+#  saipehighlights = json
+
+# get district name
+getDistrictName = (d) ->
+  d.properties.d_name + " District"
+
+# draw the spark in the upper right
+drawSpark = ->
+  if selectedDistrict or currentDistrict
+    spark.style "visibility", "visible"
+    districtName.style "visibility", "visible"
+    name = undefined
+    if selectedDistrict
+      name = getDistrictName(selectedDistrict.__data__)
+    else
+      name = getDistrictName(currentDistrict)
+    districtName.selectAll("text").data(name).text (d,i) ->
+      d
+  else
+    spark.style "visibility", "hidden"
+    districtName.style "visibility", "hidden"
+
+drawMap = ->
+  # we fill in all the path elements (pretty confusing)
+  map.selectAll("path").attr("class", quantize)
+
+#########################################################################
+#                         Here it the big deal
+#########################################################################
 d3.json "/json/short_districts.json", (json) ->
   features = []
   i = 0
-  console.log(json);
-  districts.selectAll("path").data(json.features).enter().append("path").attr("class", (if json then quantize else null)).attr("d", path).on("mouseover", (d) ->
-        d3.select(this).style('fill', highlightColor)
-        console.log(d.properties.d_name)
-        $('#details').html("district " + d.properties.d_name + " has " + d.properties.auths + " authorizations");
+  while i < json.features.length
+    feature = json.features[i]
+    features.push feature if feature.properties
+    i++
+  # ensure a click resets things
+  svg.on "click", (d,i) ->
+    if selectedDistrict
+      d3.select(selectedDistrict).style("fill",'').attr "class", quantize # need to look up districtColor
+      selectedDistrict = null
 
-        display base for base in base_list when d.properties.base isnt null
-
+  map.selectAll("path").data(features).enter().append("svg:path").attr("d", path).on("mouseover", (d) ->
+    unless selectedDistrict
+      d3.select(this).style "fill", highlightColor
+      currentDistrict = d
+      drawSpark()
   ).on("mouseout", (d) ->
-        d3.select(this).style('fill','');
+    d3.select(this).style("fill",'').attr "class", quantize unless selectedDistrict
+    currentDistrict = null
+    drawSpark()
   )
 
+  drawTitleAndMisc()
+  drawMap()
+
+standard_color = (d) ->
+  'pink'
+
 quantize = (d) ->
-        "q" + Math.min(8, d.properties.color_index) + "-9"
+  console.log(d)
+  "q" + Math.min(8, d.properties.color_index) + "-9"
 
 display = (b) ->
-        console.log(b)
-        $('#details').append('<p>' + b + '</p>')
+  console.log(b)
+  $('#details').append('<p>' + b + '</p>')
+
+# do we want notes?
+drawTitleAndMisc = ->
+  svg.append("svg:text").attr("class", "notes").attr("transform", "translate(" + (950 + extraTranslateRight) + ", 715)").attr("text-anchor", "end").text "By: TIM BOOHER AND JOHN SWISHER | March 2012"
+  svg.append("svg:text").attr("class", "notes").attr("transform", "translate(" + (950 + extraTranslateRight) + ", 730)").attr("text-anchor", "end").text "Data: MPES Database, Small Area Income & Poverty Estimates, U.S. Census Bureau"
