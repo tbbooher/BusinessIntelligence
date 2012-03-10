@@ -126,9 +126,17 @@ h2 {
 .legend-title,
 .legend-tick,
 .legend text,
+.pic,
 .title,
 .year {
   fill: #ddd;
+}
+
+.pic {
+    height:100px;
+    width:100px;
+    background-color:'white';
+    color:'green';
 }
 
 .legend-tick {

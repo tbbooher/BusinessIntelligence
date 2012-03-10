@@ -49,7 +49,6 @@
     (if datum then convertPercentToColor(datum) else noData)
 
   drawMap = ->
-    svg.select(".year").text years[currentYearIndex]
     map.selectAll("path").style "fill", quantize
     displayCurrentSettings()
 

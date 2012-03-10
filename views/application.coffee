@@ -6,6 +6,8 @@ selectedDistrict = undefined
 saipehighlights = undefined
 states = undefined
 currentDistrict = undefined
+members = undefined
+
 #spark = undefined
 #map = undefined
 extraTranslateRight = 100
@@ -22,7 +24,8 @@ map = svg.append("svg:g").attr("class", "map Blues").attr("transform", "translat
 spark = svg.append("svg:g").attr("class", "spark").attr("transform", "translate(55, 230)").style("visibility", "hidden")
 
 # need to change this to district name
-districtName = svg.append("svg:g").attr("class", "districtName").attr("transform", "translate(15, 260)").style("visibility", "visible")
+districtName = svg.append("svg:text").attr("class", "year").attr("transform", "translate(15, 50)").text('');
+districtPic = svg.append("svg:image").attr("class", "pic").attr("transform", "translate(15, 150)").attr("width",100).attr("height",100)
 
 # let us build a legend
 legend = svg.append("svg:g").attr("transform", "translate(" + (904 + extraTranslateRight) + ", 240)")
@@ -33,29 +36,36 @@ legendTicks = legend.append("svg:g")
 d3.json "/json/us-states.json", (json) ->
   states = json
 
+d3.json "/json/district_to_member.json", (json) ->
+  members = json
+
 # let us load saipe data
 #d3.json "../static/data/saipehighlights.json", (json) ->
 #  saipehighlights = json
 
 # get district name
 getDistrictName = (d) ->
-  d.properties.d_name + " District"
+  d.properties.d_name
 
 # draw the spark in the upper right
 drawSpark = ->
   if selectedDistrict or currentDistrict
     spark.style "visibility", "visible"
     districtName.style "visibility", "visible"
+    districtPic.style "visibility", "visible"
     name = undefined
     if selectedDistrict
       name = getDistrictName(selectedDistrict.__data__)
     else
       name = getDistrictName(currentDistrict)
-    districtName.selectAll("text").data(name).text (d,i) ->
-      d
+    districtName.text(name)
+    console.log(name)
+    console.log(members[0][name])
+    districtPic.attr("xlink:href","/images/412500-100px.jpeg")
   else
     spark.style "visibility", "hidden"
     districtName.style "visibility", "hidden"
+    districtPic.style "visibility", "hidden"
 
 drawMap = ->
   # we fill in all the path elements (pretty confusing)
@@ -95,11 +105,9 @@ standard_color = (d) ->
   'pink'
 
 quantize = (d) ->
-  console.log(d)
   "q" + Math.min(8, d.properties.color_index) + "-9"
 
 display = (b) ->
-  console.log(b)
   $('#details').append('<p>' + b + '</p>')
 
 # do we want notes?
