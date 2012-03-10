@@ -59,9 +59,7 @@ drawSpark = ->
     else
       name = getDistrictName(currentDistrict)
     districtName.text(name)
-    console.log(name)
-    console.log(members[0][name])
-    districtPic.attr("xlink:href","/images/412500-100px.jpeg")
+    districtPic.attr("xlink:href","/images/" + members[name] + "-100px.jpeg")
   else
     spark.style "visibility", "hidden"
     districtName.style "visibility", "hidden"
