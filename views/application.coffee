@@ -22,7 +22,7 @@ map = svg.append("svg:g").attr("class", "map Blues").attr("transform", "translat
 spark = svg.append("svg:g").attr("class", "spark").attr("transform", "translate(55, 230)").style("visibility", "hidden")
 
 # need to change this to district name
-districtName = svg.append("svg:g").attr("class", "districtName").attr("transform", "translate(15, 260)").style("visibility", "hidden")
+districtName = svg.append("svg:g").attr("class", "districtName").attr("transform", "translate(15, 260)").style("visibility", "hidden").insert("svg:text").attr("class","district").text("district placeholder")
 
 # let us build a legend
 legend = svg.append("svg:g").attr("transform", "translate(" + (904 + extraTranslateRight) + ", 240)")
@@ -37,23 +37,27 @@ d3.json "/json/us-states.json", (json) ->
 #d3.json "../static/data/saipehighlights.json", (json) ->
 #  saipehighlights = json
 
-# get district name
-getDistrictName = (d) ->
-  d.properties.d_name + " District"
-
 # draw the spark in the upper right
 drawSpark = ->
+  console.log('drawing spark')
   if selectedDistrict or currentDistrict
+    console.log('visible')
     spark.style "visibility", "visible"
     districtName.style "visibility", "visible"
     name = undefined
-    if selectedDistrict
+    if selectedDistrict  # only possible with click events
+      console.log('selected district')
       name = getDistrictName(selectedDistrict.__data__)
     else
+      console.log('not selected district')
       name = getDistrictName(currentDistrict)
+      console.log(name)
     districtName.selectAll("text").data(name).text (d,i) ->
-      d
+      console.log('setting district name')
+      console.log(d.properties.d_name)
+      d.properties.d_name
   else
+    console.log('hiding spark')
     spark.style "visibility", "hidden"
     districtName.style "visibility", "hidden"
 
@@ -62,7 +66,7 @@ drawMap = ->
   map.selectAll("path").attr("class", quantize)
 
 #########################################################################
-#                         Here it the big deal
+#                         Here is the big deal
 #########################################################################
 d3.json "/json/short_districts.json", (json) ->
   features = []
@@ -85,24 +89,24 @@ d3.json "/json/short_districts.json", (json) ->
   ).on("mouseout", (d) ->
     d3.select(this).style("fill",'').attr "class", quantize unless selectedDistrict
     currentDistrict = null
-    drawSpark()
+    #drawSpark()
   )
 
   drawTitleAndMisc()
   drawMap()
 
-standard_color = (d) ->
-  'pink'
-
 quantize = (d) ->
-  console.log(d)
   "q" + Math.min(8, d.properties.color_index) + "-9"
 
 display = (b) ->
-  console.log(b)
+  console.log('display called')
   $('#details').append('<p>' + b + '</p>')
 
 # do we want notes?
 drawTitleAndMisc = ->
   svg.append("svg:text").attr("class", "notes").attr("transform", "translate(" + (950 + extraTranslateRight) + ", 715)").attr("text-anchor", "end").text "By: TIM BOOHER AND JOHN SWISHER | March 2012"
   svg.append("svg:text").attr("class", "notes").attr("transform", "translate(" + (950 + extraTranslateRight) + ", 730)").attr("text-anchor", "end").text "Data: MPES Database, Small Area Income & Poverty Estimates, U.S. Census Bureau"
+
+# get district name
+getDistrictName = (d) ->
+  "District: " + d.properties.d_name
