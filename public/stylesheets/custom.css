@@ -126,9 +126,18 @@ h2 {
 .legend-title,
 .legend-tick,
 .legend text,
+.pic,
 .title,
+.a_base,
 .year {
     fill: #ddd;
+}
+
+.pic {
+    height:100px;
+    width:100px;
+    background-color:'white';
+    color:'green';
 }
 
 .legend-tick {
@@ -148,7 +157,7 @@ h2 {
 }
 
 .year {
-    font-size: 3em;
+  font-size: 1.5em;
 }
 
 .notes {
@@ -260,11 +269,11 @@ svg {
     margin-bottom: 20px;
 }
 
-#header .subtitle {
-    font-family: georgia, "times new roman", times, serif;
-    font-size: 1.1em;
-    line-height: 1.65em;
-    font-weight: normal;
-    padding: 0px;
-    margin: 0px;
-}
+            #header .subtitle {
+                font-family: georgia, "times new roman", times, serif;
+                font-size: 1.1em;
+                line-height: 1.65em;
+                font-weight: normal;
+                padding: 0px;
+                margin: 0px;
+            }
