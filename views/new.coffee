@@ -87,11 +87,9 @@
   legendGradientWidth = 30
   legendGradientHeight = 200
   extraTranslateRight = 100
-  years = []
   noData = "rgb(255,255,255)"
   highlightColor = d3.rgb(198, 42, 42)
   highlightColor = d3.rgb("red").darker()
-  currentYearIndex = 0
   hue = 230
 
   #basic graphics manipulation (we need to do)
@@ -102,8 +100,10 @@
   legendTicks = legend.append("svg:g")
   map = svg.append("svg:g").attr("class", "map").attr("transform", "translate(" + (extraTranslateRight + 50) + ", 0)")
   spark = svg.append("svg:g").attr("class", "spark").attr("transform", "translate(55, 230)").style("visibility", "hidden")
-  countyName = svg.append("svg:g").attr("class", "countyName").attr("transform", "translate(15, 260)").style("visibility", "hidden")
+  countyName = svg.append('svg:text').attr('class', 'year').attr('transform', 'translate(15, 50)').text('');
+  #svg.append("svg:g").attr("class", "countyName").attr("transform", "translate(15, 260)").style("visibility", "hidden")
 
+  countyNa
   # load states data
   d3.json "../static/data/states.json", (json) ->
     states = json

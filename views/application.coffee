@@ -22,7 +22,7 @@ map = svg.append("svg:g").attr("class", "map Blues").attr("transform", "translat
 spark = svg.append("svg:g").attr("class", "spark").attr("transform", "translate(55, 230)").style("visibility", "hidden")
 
 # need to change this to district name
-districtName = svg.append("svg:g").attr("class", "districtName").attr("transform", "translate(15, 260)").style("visibility", "hidden")
+districtName = svg.append("svg:g").attr("class", "districtName").attr("transform", "translate(15, 260)").style("visibility", "visible")
 
 # let us build a legend
 legend = svg.append("svg:g").attr("transform", "translate(" + (904 + extraTranslateRight) + ", 240)")
