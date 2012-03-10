@@ -7,6 +7,8 @@ saipehighlights = undefined
 states = undefined
 currentDistrict = undefined
 members = undefined
+bases = undefined
+i = 0
 
 #spark = undefined
 #map = undefined
@@ -25,7 +27,8 @@ spark = svg.append("svg:g").attr("class", "spark").attr("transform", "translate(
 
 # need to change this to district name
 districtName = svg.append("svg:text").attr("class", "year").attr("transform", "translate(15, 50)").text('');
-districtPic = svg.append("svg:image").attr("class", "pic").attr("transform", "translate(15, 150)").attr("width",100).attr("height",100)
+districtPic = svg.append("svg:image").attr("class", "pic").attr("transform", "translate(15, 90)").attr("width",100).attr("height",100)
+districtBases = svg.append("svg:g").attr("class", "bases").attr("transform", "translate(15, 200)");
 
 # let us build a legend
 legend = svg.append("svg:g").attr("transform", "translate(" + (904 + extraTranslateRight) + ", 240)")
@@ -35,6 +38,10 @@ legendTicks = legend.append("svg:g")
 # let us store some states -- should we use these?
 d3.json "/json/us-states.json", (json) ->
   states = json
+
+# and we shall store some bases, yes we shall
+d3.json "/json/bases_districts.json", (json) ->
+  bases = json
 
 d3.json "/json/district_to_member.json", (json) ->
   members = json
@@ -47,7 +54,7 @@ d3.json "/json/district_to_member.json", (json) ->
 getDistrictName = (d) ->
   d.properties.d_name
 
-# draw the spark in the upper right
+# draw the spark in the upper right (yes, not such a spark now)
 drawSpark = ->
   if selectedDistrict or currentDistrict
     spark.style "visibility", "visible"
@@ -58,15 +65,24 @@ drawSpark = ->
       name = getDistrictName(selectedDistrict.__data__)
     else
       name = getDistrictName(currentDistrict)
-    districtName.text(name)
-    districtPic.attr("xlink:href","/images/" + members[name] + "-100px.jpeg")
+    districtName.text(members[name]['member_name'])
+    districtPic.attr("xlink:href","/images/" + members[name]['member_id'] + "-100px.jpeg")
+    i = 0
+    display base for base in bases[name] if bases[name]
   else
     spark.style "visibility", "hidden"
     districtName.style "visibility", "hidden"
     districtPic.style "visibility", "hidden"
+    districtBases.selectAll(".a_base").remove()
+
+display = (base) ->
+  console.log(base)
+  console.log(i)
+  i = i + 20
+  districtBases.append("svg:text").attr("class", "a_base").attr("transform", "translate(15, "+ (300 + i) + ")").text(base);
 
 drawMap = ->
-  # we fill in all the path elements (pretty confusing)
+  # we fill in all the path elements
   map.selectAll("path").attr("class", quantize)
 
 #########################################################################
@@ -77,14 +93,14 @@ d3.json "/json/short_districts.json", (json) ->
   i = 0
   while i < json.features.length
     feature = json.features[i]
-    features.push feature if feature.properties
+    features.push feature if feature.properties # let's exclude puerto-rico here . . .
     i++
   # ensure a click resets things
   svg.on "click", (d,i) ->
+    # basically, a reset
     if selectedDistrict
       d3.select(selectedDistrict).style("fill",'').attr "class", quantize # need to look up districtColor
       selectedDistrict = null
-
   map.selectAll("path").data(features).enter().append("svg:path").attr("d", path).on("mouseover", (d) ->
     unless selectedDistrict
       d3.select(this).style "fill", highlightColor
@@ -99,14 +115,8 @@ d3.json "/json/short_districts.json", (json) ->
   drawTitleAndMisc()
   drawMap()
 
-standard_color = (d) ->
-  'pink'
-
 quantize = (d) ->
   "q" + Math.min(8, d.properties.color_index) + "-9"
-
-display = (b) ->
-  $('#details').append('<p>' + b + '</p>')
 
 # do we want notes?
 drawTitleAndMisc = ->

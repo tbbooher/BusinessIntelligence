@@ -128,6 +128,7 @@ h2 {
 .legend text,
 .pic,
 .title,
+.a_base,
 .year {
   fill: #ddd;
 }
@@ -156,7 +157,7 @@ h2 {
 }
 
 .year {
-  font-size: 3em;
+  font-size: 1.5em;
 }
 
 .notes {

@@ -16,14 +16,15 @@ for i = 1:numel(s)
          j = j + 1;
          disp('-------------------------');
          disp(b.FULLNAME);
-         base_list{j} = b.FULLNAME;
+         base_list{j} = ['"' b.FULLNAME '"'];
       end
    end
-   json{i} = savejson(district_name, base_list);
+   json{i} = ['"' district_name '":{"bases":[' join(',', base_list) '],"base_count":' num2str(j) '}'];
 end
 
-disp(json);
-
+fid = fopen('bases_districts.json','w');
+fwrite(fid, ['{' join(',',json) '}']);
+fclose(fid);
 
 end
 
