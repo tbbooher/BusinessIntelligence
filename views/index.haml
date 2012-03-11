@@ -5,9 +5,19 @@
   The primary purpose of this site is to demonstrate insight available from open source tools and data. While optimization
   is heavily used to provide decision support, it does not always provide transparency into the key
   interactions and disparate data which ultimately should be understood to facilitate decisions with
-  national impact. The map below shows a choropleth of all US congressional districts with a face-color
-  which corresponds to the percent of the district which is directly employed by the military as
-  defined by the American Community Survey in their 2009 and 2010 1-year estimates.
+  national impact. The map below shows a choropleth of all US congressional districts with colors
+  corresponding to either the percent of population employed by the military according to the 2010
+  American Community Survey, the number of Air Force funded authorizations from the MPES database or
+  the number of military installations as defined by the US census bureau.
+%p.subtitle
+  Percent military is shown initially, click below to see: 
+  %ul
+    %li
+      %a#auths{:href => "#"} US Air Force Authorizations
+    %li
+      %a#percent_military{:href => "#"} Percent Military
+    %li
+      %a#base_count{:href=> "#"} Base Count  
 
 #chart
 

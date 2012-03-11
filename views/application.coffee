@@ -8,7 +8,24 @@ states = undefined
 currentDistrict = undefined
 members = undefined
 demographics = undefined
+displayData = "%military"
 i = 0
+
+$('#auths').click ->
+  displayData = "af_auths"
+  map.attr("class", "map Blues")
+  drawMap()
+
+$('#percent_military').click ->
+  displayData = "%military"
+  map.attr("class", "map Oranges")
+  drawMap()
+
+$('#base_count').click ->
+  displayData = "base_count"
+  map.attr("class", "map Purples")
+  drawMap()
+
 
 #spark = undefined
 #map = undefined
@@ -22,7 +39,7 @@ path = d3.geo.path()
 
 # build our map
 svg = d3.select("#chart").append("svg:svg")
-map = svg.append("svg:g").attr("class", "map Blues").attr("transform", "translate(" + (extraTranslateRight + 50) + ", 0)")
+map = svg.append("svg:g").attr("class", "map Oranges").attr("transform", "translate(" + (extraTranslateRight + 50) + ", 0)")
 spark = svg.append("svg:g").attr("class", "spark").attr("transform", "translate(55, 230)").style("visibility", "hidden")
 
 # need to change this to district name
@@ -84,7 +101,7 @@ drawSpark = ->
     districtName.style "visibility", "hidden"
     unemployment.style "visibility", "hidden"
     percent_military.style "visibility", "hidden"
-    districtPic.style "visibility", "hidden"
+    #districtPic.style "visibility", "hidden"
     geographyPic.style "visibility", "hidden"
     districtBases.selectAll(".a_base").remove()
 
@@ -93,9 +110,7 @@ display = (base) ->
   districtBases.append("svg:text").attr("class", "a_base").attr("transform", "translate(15, "+ (300 + i) + ")").text(base);
 
 drawMap = ->
-  # we fill in all the path elements
-  #map.selectAll("path").attr("class", quantize)
-  map.selectAll("path").attr("class", quantize_by_military)
+  map.selectAll("path").attr("class", quantize)
 
 #########################################################################
 #                         Here it the big deal
@@ -111,7 +126,7 @@ d3.json "/json/short_districts.json", (json) ->
   svg.on "click", (d,i) ->
     # basically, a reset
     if selectedDistrict
-      d3.select(selectedDistrict).style("fill",'').attr "class", quantize_by_miltary # need to look up districtColor
+      d3.select(selectedDistrict).style("fill",'').attr "class", quantize # need to look up districtColor
       selectedDistrict = null
   map.selectAll("path").data(features).enter().append("svg:path").attr("d", path).on("mouseover", (d) ->
     unless selectedDistrict
@@ -119,7 +134,7 @@ d3.json "/json/short_districts.json", (json) ->
       currentDistrict = d
       drawSpark()
   ).on("mouseout", (d) ->
-    d3.select(this).style("fill",'').attr "class", quantize_by_military unless selectedDistrict
+    d3.select(this).style("fill",'').attr "class", quantize unless selectedDistrict
     currentDistrict = null
     drawSpark()
   )
@@ -128,14 +143,13 @@ d3.json "/json/short_districts.json", (json) ->
   drawMap()
 
 quantize = (d) ->
-  "q" + Math.min(8, d.properties.color_index) + "-9"
-
-quantize_by_military = (d) ->
-  #console.log(d.properties.d_name);
-  console.log( ~~(demographics[d.properties.d_name].percent_military_employment_10 * 2/8));
-  "q" + Math.min(8, ~~(demographics[d.properties.d_name].percent_military_employment_10 * 8)) + "-9"
+  switch displayData
+    when "%military" then "q" + Math.min(8, ~~(demographics[d.properties.d_name].percent_military_employment_10 * 8)) + "-9"
+    when "af_auths" then "q" + Math.min(8, d.properties.color_index) + "-9"
+    when "f-16_bases" then "q8-9" if f16s[d.properties.d_name].length > 0
+    when "base_count" then "q" + Math.min(8, demographics[d.properties.d_name].base_count) + "-9"
 
 # do we want notes?
 drawTitleAndMisc = ->
-  svg.append("svg:text").attr("class", "notes").attr("transform", "translate(" + (950 + extraTranslateRight) + ", 715)").attr("text-anchor", "end").text "By: TIM BOOHER AND JOHN SWISHER | March 2012"
-  svg.append("svg:text").attr("class", "notes").attr("transform", "translate(" + (950 + extraTranslateRight) + ", 730)").attr("text-anchor", "end").text "Data: MPES Database, Small Area Income & Poverty Estimates, U.S. Census Bureau"
+  svg.append("svg:text").attr("class", "notes").attr("transform", "translate(" + (950 + extraTranslateRight) + ", 715)").attr("text-anchor", "end").text "By: TIM BOOHER | March 2012"
+  svg.append("svg:text").attr("class", "notes").attr("transform", "translate(" + (950 + extraTranslateRight) + ", 730)").attr("text-anchor", "end").text "Data: MPES Database, American Community Survey, Small Area Income & Poverty Estimates, U.S. Census Bureau"
