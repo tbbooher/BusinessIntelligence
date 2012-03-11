@@ -111,7 +111,7 @@ d3.json "/json/short_districts.json", (json) ->
   svg.on "click", (d,i) ->
     # basically, a reset
     if selectedDistrict
-      d3.select(selectedDistrict).style("fill",'').attr "class", quantize # need to look up districtColor
+      d3.select(selectedDistrict).style("fill",'').attr "class", quantize_by_miltary # need to look up districtColor
       selectedDistrict = null
   map.selectAll("path").data(features).enter().append("svg:path").attr("d", path).on("mouseover", (d) ->
     unless selectedDistrict
@@ -119,7 +119,7 @@ d3.json "/json/short_districts.json", (json) ->
       currentDistrict = d
       drawSpark()
   ).on("mouseout", (d) ->
-    d3.select(this).style("fill",'').attr "class", quantize unless selectedDistrict
+    d3.select(this).style("fill",'').attr "class", quantize_by_military unless selectedDistrict
     currentDistrict = null
     drawSpark()
   )
@@ -133,7 +133,7 @@ quantize = (d) ->
 quantize_by_military = (d) ->
   #console.log(d.properties.d_name);
   console.log( ~~(demographics[d.properties.d_name].percent_military_employment_10 * 2/8));
-  "q" + Math.min(8, ~~(demographics[d.properties.d_name].percent_military_employment_10 * 2/8)) + "-9"
+  "q" + Math.min(8, ~~(demographics[d.properties.d_name].percent_military_employment_10 * 8)) + "-9"
 
 # do we want notes?
 drawTitleAndMisc = ->

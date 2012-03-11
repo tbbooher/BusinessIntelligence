@@ -15,7 +15,7 @@ for i = 1:numel(s)
    district_name = find_name(d);
    ax = axesm ('mercator', 'Frame', 'off', 'Grid', 'off', ...
        'MapLatLimit', d.BoundingBox(:,2), 'MapLonLimit',d.BoundingBox(:,1));
-   geoshow(ax,d, 'FaceColor', [200 200 200]./256);
+   geoshow(ax,d, 'FaceColor', [200 200 200]./255);
    disp(district_name);
    p_district = [d.Lat; d.Lon];
    j = 0;
@@ -40,7 +40,7 @@ for i = 1:numel(s)
    emp_percent_10 = num2str(data(iDistrict,17));
    mil_emp_percent_09 = sprintf('%2.1f',(mil_emp_09./pop9)*100);
    mil_emp_percent_10 = sprintf('%2.1f',(mil_emp_10./pop9)*100);
-   set(gcf,'Color','white');
+   set(gcf,'Color',[34 34 34]./255);
    set(gca,'visible','off');
    tightmap;   
    setSizeAndSaveFigure(gcf,[200 150],[district_name '.jpg'])
