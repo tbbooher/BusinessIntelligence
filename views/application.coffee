@@ -101,7 +101,7 @@ drawSpark = ->
     districtName.style "visibility", "hidden"
     unemployment.style "visibility", "hidden"
     percent_military.style "visibility", "hidden"
-    #districtPic.style "visibility", "hidden"
+    districtPic.style "visibility", "hidden"
     geographyPic.style "visibility", "hidden"
     districtBases.selectAll(".a_base").remove()
 
