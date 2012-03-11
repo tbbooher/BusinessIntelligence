@@ -134,10 +134,8 @@ h2 {
 }
 
 .pic {
-    height:100px;
-    width:100px;
-    background-color:'white';
-    color:'green';
+    /* why won't this work ?? */
+    border:5px solid white;
 }
 
 .legend-tick {

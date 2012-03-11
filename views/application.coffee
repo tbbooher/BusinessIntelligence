@@ -7,7 +7,7 @@ saipehighlights = undefined
 states = undefined
 currentDistrict = undefined
 members = undefined
-bases = undefined
+demographics = undefined
 i = 0
 
 #spark = undefined
@@ -28,12 +28,15 @@ spark = svg.append("svg:g").attr("class", "spark").attr("transform", "translate(
 # need to change this to district name
 districtName = svg.append("svg:text").attr("class", "year").attr("transform", "translate(15, 50)").text('');
 districtPic = svg.append("svg:image").attr("class", "pic").attr("transform", "translate(15, 90)").attr("width",100).attr("height",100)
+geographyPic = svg.append("svg:image").attr("class", "pic").attr("transform", "translate(700, 475)").attr("width",200).attr("height",150)
 districtBases = svg.append("svg:g").attr("class", "bases").attr("transform", "translate(15, 200)");
+unemployment = svg.append("svg:text").attr("class", "a_base").attr("transform", "translate(15, 210)").text('');
+percent_military = svg.append("svg:text").attr("class", "a_base").attr("transform", "translate(15, 230)").text('');
 
 # let us build a legend
-legend = svg.append("svg:g").attr("transform", "translate(" + (904 + extraTranslateRight) + ", 240)")
+legend         = svg.append("svg:g").attr("transform", "translate(" + (904 + extraTranslateRight) + ", 240)")
 legendGradient = legend.append("svg:g")
-legendTicks = legend.append("svg:g")
+legendTicks    = legend.append("svg:g")
 
 # let us store some states -- should we use these?
 d3.json "/json/us-states.json", (json) ->
@@ -41,7 +44,7 @@ d3.json "/json/us-states.json", (json) ->
 
 # and we shall store some bases, yes we shall
 d3.json "/json/bases_districts.json", (json) ->
-  bases = json
+  demographics = json
 
 d3.json "/json/district_to_member.json", (json) ->
   members = json
@@ -60,6 +63,9 @@ drawSpark = ->
     spark.style "visibility", "visible"
     districtName.style "visibility", "visible"
     districtPic.style "visibility", "visible"
+    geographyPic.style "visibility", "visible"
+    unemployment.style "visibility", "visible"
+    percent_military.style "visibility", "visible"
     name = undefined
     if selectedDistrict
       name = getDistrictName(selectedDistrict.__data__)
@@ -67,23 +73,29 @@ drawSpark = ->
       name = getDistrictName(currentDistrict)
     districtName.text(members[name]['member_name'])
     districtPic.attr("xlink:href","/images/" + members[name]['member_id'] + "-100px.jpeg")
+    geographyPic.attr("xlink:href","/images/district_photos/" + name + ".jpg")
     i = 0
-    display base for base in bases[name] if bases[name]
+    display base for base in demographics[name].bases if demographics[name].bases
+    unemployment.text(demographics[name].unemployment_percent_10 + "% unemployment (was " + demographics[name].unemployment_percent_09 + "%)");
+    percent_military.text(demographics[name].percent_military_employment_10 + "% military (was " + demographics[name].percent_military_employment_09 + "%)");
+    #percent_military_employment_09
   else
     spark.style "visibility", "hidden"
     districtName.style "visibility", "hidden"
+    unemployment.style "visibility", "hidden"
+    percent_military.style "visibility", "hidden"
     districtPic.style "visibility", "hidden"
+    geographyPic.style "visibility", "hidden"
     districtBases.selectAll(".a_base").remove()
 
 display = (base) ->
-  console.log(base)
-  console.log(i)
   i = i + 20
   districtBases.append("svg:text").attr("class", "a_base").attr("transform", "translate(15, "+ (300 + i) + ")").text(base);
 
 drawMap = ->
   # we fill in all the path elements
-  map.selectAll("path").attr("class", quantize)
+  #map.selectAll("path").attr("class", quantize)
+  map.selectAll("path").attr("class", quantize_by_military)
 
 #########################################################################
 #                         Here it the big deal
@@ -117,6 +129,11 @@ d3.json "/json/short_districts.json", (json) ->
 
 quantize = (d) ->
   "q" + Math.min(8, d.properties.color_index) + "-9"
+
+quantize_by_military = (d) ->
+  #console.log(d.properties.d_name);
+  console.log( ~~(demographics[d.properties.d_name].percent_military_employment_10 * 2/8));
+  "q" + Math.min(8, ~~(demographics[d.properties.d_name].percent_military_employment_10 * 2/8)) + "-9"
 
 # do we want notes?
 drawTitleAndMisc = ->
